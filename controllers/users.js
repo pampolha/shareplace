@@ -20,11 +20,6 @@ const create = (req, res) => {
     email,
     password,
   };
-  // if (Object.values(user).some((val) => !val))
-  //   throw new RequestError(
-  //     "User must have properties: name, email, password",
-  //     404
-  //   );
   if (dummyUsers.some((el) => el.email === email))
     throw new RequestError("User with given email already exists", 409);
   dummyUsers.push(user);
@@ -33,11 +28,6 @@ const create = (req, res) => {
 
 const login = (req, res) => {
   const { name, email, password } = req.body;
-  // if (!((name || email) && password))
-  //   throw new RequestError(
-  //     "Login requires properties: email, password",
-  //     404
-  //   );
   const user = dummyUsers.find(
     (el) => el.email === email && el.password === password
   );

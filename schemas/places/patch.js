@@ -6,7 +6,7 @@ const modifyPlaceSchema = z
     body: z.object({
       title: z.string(),
       description: z.string(),
-      coordinates: z.object({ lat: z.number(), lng: z.number() }),
+      location: z.object({ lat: z.number(), lng: z.number() }),
       address: z.string(),
       creatorId: z.string().uuid(),
     }),

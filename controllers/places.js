@@ -1,5 +1,7 @@
 const dummyPlaces = require("../models/dummyPlaces");
 const RequestError = require("../models/requestError");
+const placeAlreadyExists = require("../utils/places/duplicates");
+const { getAddress, getlocation } = require("../utils/places/location");
 const uuid = require("uuid").v4;
 
 const getById = (req, res) => {
@@ -27,8 +29,6 @@ const deleteById = (req, res) => {
 
 const deleteByUserId = (req, res) => {
   const hasPlaces = dummyPlaces.some((el) => el.creatorId === req.params.id);
-  // if (!hasPlaces)
-  //   throw new RequestError("No place found for given user id", 404);
   const places = [];
   dummyPlaces.forEach((el, i) => {
     if (el.creatorId === req.params.id) {
@@ -39,20 +39,23 @@ const deleteByUserId = (req, res) => {
   res.status(200).json({ message: "Place(s) deleted", places });
 };
 
-const create = (req, res) => {
-  const { title, description, coordinates, address, creatorId } = req.body;
+const create = async (req, res, next) => {
+  const { title, description, location, address, creatorId } = req.body;
+  if (placeAlreadyExists(location, address))
+    return next(
+      new RequestError(
+        "Place with the exact same location and/or address already exists",
+        409
+      )
+    );
   const place = {
     id: uuid(),
     title,
     description,
-    location: coordinates,
-    address,
+    location: location ?? getlocation(address),
+    address: address ?? getAddress(location),
     creatorId,
   };
-  // if (Object.values(place).some((val) => !val))
-  //   throw new RequestError(
-  //     "Place must have properties: title, description, coordinates, address, creatorId"
-  //   );
   dummyPlaces.push(place);
   res.status(201).json({ message: "Place created", place });
 };
@@ -61,7 +64,7 @@ const modify = (req, res) => {
   const placeIndex = dummyPlaces.findIndex((el) => el.id === req.params.id);
   if (!placeIndex) throw new RequestError("No place found for given id", 404);
   const newProperties = new Object(
-    ({ title, description, coordinates, address, creatorId } = req.body)
+    ({ title, description, location, address, creatorId } = req.body)
   );
   // if (!Object.values(newProperties).length)
   //   throw new RequestError("No properties were given", 422);
