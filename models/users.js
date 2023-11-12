@@ -7,6 +7,10 @@ const usersSchema = new dynamoose.Schema(
       required: true,
     },
     email: {
+      index: {
+        name: "email-index",
+        type: "global",
+      },
       type: String,
       required: true,
     },
