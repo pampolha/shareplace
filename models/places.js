@@ -1,17 +1,33 @@
 const dynamoose = require("dynamoose");
 const placesSchema = new dynamoose.Schema(
   {
-    id: { type: String, hashKey: true },
-    userId: String,
+    id: { type: String, hashKey: true, required: true },
+    userId: {
+      type: String,
+      required: true,
+    },
     location: {
       type: Object,
       schema: {
-        lat: Number,
-        lng: Number,
+        lat: {
+          type: Number,
+          required: true,
+        },
+        lng: {
+          type: Number,
+          required: true,
+        },
       },
+      required: true,
     },
-    address: String,
-    title: String,
+    address: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
