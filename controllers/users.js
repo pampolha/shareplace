@@ -19,7 +19,7 @@ const getById = async (req, res, next) => {
     const user = await Users.get(req.params.id, {
       attributes: publicAttributes,
     });
-    if (!user) throw new RequestError("No user found for the given id", 404);
+    if (!user) return next(new RequestError("No user found for the given id", 404));
     res.status(200).json({ user });
   } catch (err) {
     console.error(err);
