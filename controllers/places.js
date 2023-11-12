@@ -1,5 +1,5 @@
 const dummyPlaces = require("../models/dummyPlaces");
-const RequestError = require("../models/requestError");
+const RequestError = require("../utils/places/errors/requestError");
 const placeAlreadyExists = require("../utils/places/duplicates");
 const { getAddress, getlocation } = require("../utils/places/location");
 const uuid = require("uuid").v4;
