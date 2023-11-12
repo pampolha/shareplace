@@ -6,7 +6,7 @@ const { createUserSchema, userLoginSchema } = require("../schemas/users/post");
 
 const router = express.Router();
 
-router.get("/", requestValidator(getUserSchema), controller.get.all);
+router.get("/", controller.get.all);
 router.get("/:id", requestValidator(getUserSchema), controller.get.byId);
 router.post(
   "/signup",
