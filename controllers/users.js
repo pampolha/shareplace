@@ -1,5 +1,5 @@
 const dummyUsers = require("../models/dummyUsers");
-const RequestError = require("../models/requestError");
+const RequestError = require("../utils/places/errors/requestError");
 const uuid = require("uuid").v4;
 
 const getAll = (req, res) => {

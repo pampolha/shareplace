@@ -2,8 +2,13 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const placesRouter = require("./routes/places");
 const usersRouter = require("./routes/users");
-const RequestError = require("./models/requestError");
-const ValidationError = require("./models/validationError");
+const RequestError = require("./utils/places/errors/requestError");
+const ValidationError = require("./utils/places/errors/validationError");
+const dynamoose = require('dynamoose');
+const { configDotenv } = require("dotenv");
+const Users = require("./models/users");
+const Places = require("./models/places");
+const env = configDotenv().parsed;
 
 const app = express();
 
@@ -38,4 +43,12 @@ app.use((error, req, res, next) => {
   }
 });
 
+const db = new dynamoose.aws.ddb.DynamoDB({
+  credentials: {
+      "accessKeyId": env.aws_access_key,
+      "secretAccessKey": env.aws_secret_access_key,
+  },
+  region: env.aws_region
+});
+dynamoose.aws.ddb.set(db);
 app.listen(5000);
