@@ -1,5 +1,5 @@
 const Users = require("../models/users");
-const RequestError = require("../utils/places/errors/requestError");
+const RequestError = require("../utils/errors/requestError");
 const uuid = require("uuid").v4;
 
 const publicAttributes = ["id", "name", "email", "createdAt"];

@@ -1,8 +1,8 @@
 const axios = require("axios").default;
 const { configDotenv } = require("dotenv");
-const RequestError = require("./errors/requestError");
-const key = process.env.geocoding_key;
+const RequestError = require("../errors/requestError");
 const env = configDotenv()?.parsed;
+const key = env.geocoding_key;
 
 const getLocation = async (address) => {
   const encodedAddress = encodeURIComponent(address);

@@ -1,4 +1,4 @@
-const ValidationError = require("../utils/places/errors/validationError");
+const ValidationError = require("../utils/errors/validationError");
 
 const requestValidator = (zodSchema) => async (req, res, next) => {
   try {

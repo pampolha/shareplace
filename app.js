@@ -2,14 +2,12 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const placesRouter = require("./routes/places");
 const usersRouter = require("./routes/users");
-const RequestError = require("./utils/places/errors/requestError");
-const ValidationError = require("./utils/places/errors/validationError");
+const RequestError = require("./utils/errors/requestError");
+const ValidationError = require("./utils/errors/validationError");
 const dynamoose = require('dynamoose');
 const { configDotenv } = require("dotenv");
-const Users = require("./models/users");
-const Places = require("./models/places");
-const env = configDotenv().parsed;
 
+const env = configDotenv().parsed;
 const app = express();
 
 app.use(bodyParser.json()).use((error, req, res, next) => {
