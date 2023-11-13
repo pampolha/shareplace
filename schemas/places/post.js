@@ -6,7 +6,7 @@ const createPlaceSchema = z
       description: z.string(),
       location: z.object({ lat: z.number(), lng: z.number() }).optional(),
       address: z.string().optional(),
-      creatorId: z.string().uuid(),
+      userId: z.string().uuid(),
     }),
   })
   .refine(

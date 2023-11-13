@@ -8,7 +8,6 @@ const modifyPlaceSchema = z
       description: z.string(),
       location: z.object({ lat: z.number(), lng: z.number() }),
       address: z.string(),
-      creatorId: z.string().uuid(),
     }),
   })
   .partial()

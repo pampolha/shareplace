@@ -1,84 +1,111 @@
 const dummyPlaces = require("../models/dummyPlaces");
-const RequestError = require("../utils/places/errors/requestError");
-const placeAlreadyExists = require("../utils/places/duplicates");
+const RequestError = require("../utils/errors/requestError");
 const { getAddress, getlocation } = require("../utils/places/location");
+const Places = require("../models/places");
 const uuid = require("uuid").v4;
 
-const getById = (req, res) => {
-  const place = dummyPlaces.find((place) => place.id === req.params.id);
-  if (!place) throw new RequestError("No place found for given id", 404);
-  res.status(200).json(place);
+const getById = async (req, res, next) => {
+  try {
+    const place = await Places.get(req.params.id);
+    if (!place)
+      return next(new RequestError("No place found for given id", 404));
+    res.status(200).json(place);
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while getting places", 500));
+  }
 };
 
-const getByUserId = (req, res) => {
-  const userPlaces = dummyPlaces.filter(
-    (place) => place.creatorId === req.params.id
-  );
-  if (!userPlaces.length)
-    throw new RequestError("No place found for given user id", 404);
-  res.status(200).json(userPlaces);
+const getByUserId = async (req, res, next) => {
+  try {
+    const queryResult = await Places.query("userId")
+      .eq(req.params.id)
+      .using("userId-index")
+      .exec();
+    if (!queryResult.count)
+      return next(new RequestError("No places found for given user id", 404));
+    const places = await Places.batchGet(queryResult.map((item) => item.id));
+    res.status(200).json({ places });
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while getting places", 500));
+  }
 };
 
-const deleteById = (req, res) => {
-  const placeIndex = dummyPlaces.findIndex((el) => el.id === req.params.id);
-  if (!placeIndex) throw new RequestError("No place found for given id", 404);
-  const place = dummyPlaces.at(placeIndex);
-  dummyPlaces.splice(placeIndex, 1);
-  res.status(200).json({ message: "Place deleted", place });
+const deleteById = async (req, res, next) => {
+  try {
+    const place = await Places.get(req.params.id);
+    if (!place)
+      return next(new RequestError("No place found for given id", 404));
+    await Places.delete(req.params.id);
+    res.status(200).json({ message: "Place deleted", place });
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while deleting places", 500));
+  }
 };
 
-const deleteByUserId = (req, res) => {
-  const hasPlaces = dummyPlaces.some((el) => el.creatorId === req.params.id);
-  const places = [];
-  dummyPlaces.forEach((el, i) => {
-    if (el.creatorId === req.params.id) {
-      places.push(el);
-      dummyPlaces.splice(i, 1);
-    }
-  });
-  res.status(200).json({ message: "Place(s) deleted", places });
+const deleteByUserId = async (req, res, next) => {
+  try {
+    const queryResult = await Places.query("userId")
+      .eq(req.params.id)
+      .using("userId-index")
+      .exec();
+    if (!queryResult.count)
+      return next(new RequestError("No places found for given user id", 404));
+    const placesids = queryResult.map((item) => item.id);
+    const places = await Places.batchGet(placesids);
+    await Places.batchDelete(placesids);
+    res.status(200).json({ message: "Places deleted", places });
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while deleting places", 500));
+  }
 };
 
 const create = async (req, res, next) => {
-  const { title, description, location, address, creatorId } = req.body;
-  if (placeAlreadyExists(location, address))
-    return next(
-      new RequestError(
-        "Place with the exact same location and/or address already exists",
-        409
-      )
-    );
-  const place = {
-    id: uuid(),
-    title,
-    description,
-    location: location ?? getlocation(address),
-    address: address ?? getAddress(location),
-    creatorId,
-  };
-  dummyPlaces.push(place);
-  res.status(201).json({ message: "Place created", place });
+  try {
+    const { title, description, location, address, userId } = req.body;
+    const place = {
+      id: uuid(),
+      title,
+      description,
+      location: location ?? getlocation(address),
+      address: address ?? getAddress(location),
+      userId,
+    };
+    await Places.create(place);
+    res.status(201).json({ message: "Place created", place });
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while creating places", 500));
+  }
 };
 
-const modify = (req, res) => {
-  const placeIndex = dummyPlaces.findIndex((el) => el.id === req.params.id);
-  if (!placeIndex) throw new RequestError("No place found for given id", 404);
-  const newProperties = new Object(
-    ({ title, description, location, address, creatorId } = req.body)
-  );
-  // if (!Object.values(newProperties).length)
-  //   throw new RequestError("No properties were given", 422);
-  const place = dummyPlaces.at(placeIndex);
-  const newPlace = Object.fromEntries(
-    Object.entries(place).map((entry) => {
-      entry[1] = newProperties[entry[0]] ?? entry[1];
-      return entry;
-    })
-  );
-  dummyPlaces.splice(placeIndex, 1, newPlace);
-  res
-    .status(200)
-    .json({ message: "Place modified", previousPlace: place, newPlace });
+const modify = async (req, res, next) => {
+  try {
+    const existingPlace = await Places.get(req.params.id);
+    if (!existingPlace)
+      return next(new RequestError("No place found for the given id", 404));
+    const { title, description, location, address } = req.body;
+    const changes = {
+      title: title ?? existingPlace.title,
+      description: description ?? existingPlace.description,
+      location: location ?? existingPlace.location,
+      address: address ?? existingPlace.address,
+    };
+    const newPlace = await Places.update(req.params.id, changes);
+    res
+      .status(200)
+      .json({
+        message: "Place modified",
+        previousPlace: existingPlace,
+        newPlace,
+      });
+  } catch (err) {
+    console.error(err);
+    next(new RequestError("Something went wrong while modifiyng places", 500));
+  }
 };
 
 module.exports = {

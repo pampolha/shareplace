@@ -3,6 +3,10 @@ const placesSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     userId: {
+      index: {
+        name: "userId-index",
+        type: "global",
+      },
       type: String,
       required: true,
     },
@@ -28,6 +32,10 @@ const placesSchema = new dynamoose.Schema(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: true
+    }
   },
   {
     timestamps: true,
