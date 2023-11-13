@@ -1,10 +1,10 @@
 const axios = require("axios").default;
-const dotenv = require("dotenv").config();
-const RequestError = require("../../models/requestError");
-const key = process.env.geocoding_key;
+const { configDotenv } = require("dotenv");
+const RequestError = require("../errors/requestError");
+const env = configDotenv()?.parsed;
+const key = env.geocoding_key;
 
 const getLocation = async (address) => {
-  console.log('getLocation called');
   const encodedAddress = encodeURIComponent(address);
   const response = await axios.get(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${key}`
@@ -17,8 +17,6 @@ const getLocation = async (address) => {
 };
 
 const getAddress = async ({lat, lng}) => {
-  console.log('getAddress called');
-
   const response = await axios.get(
     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${key}`
   );
