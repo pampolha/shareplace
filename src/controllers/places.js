@@ -1,4 +1,3 @@
-const dummyPlaces = require("../models/dummyPlaces");
 const RequestError = require("../utils/errors/requestError");
 const { getAddress, getlocation } = require("../utils/places/location");
 const Places = require("../models/places");
