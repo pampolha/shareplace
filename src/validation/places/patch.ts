@@ -1,6 +1,6 @@
-const { z } = require("zod");
+import { z } from "zod";
 
-const modifyPlaceSchema = z
+export const modifyPlaceSchema = z
   .object({
     params: z.object({ id: z.string().uuid() }),
     body: z.object({
@@ -15,5 +15,3 @@ const modifyPlaceSchema = z
     (schema) => Object.values(schema).some((val) => val),
     "No valid place properties were given"
   );
-
-module.exports = { modifyPlaceSchema };

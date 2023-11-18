@@ -1,8 +1,8 @@
 import express from "express";
 import controller from "../controllers/users";
-import { getUserSchema } from "../schemas/users/get";
+import { getUserSchema } from "../validation/users/get";
+import { createUserSchema, userLoginSchema } from "../validation/users/post";
 import requestValidator from "../middleware/requestValidator";
-import { createUserSchema, userLoginSchema } from "../schemas/users/post";
 
 const router = express.Router();
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
 import controller from "../controllers/places";
-import { getPlaceSchema } from "../schemas/places/get";
-import { createPlaceSchema } from "../schemas/places/post";
-import { deletePlaceSchema } from "../schemas/places/delete";
-import { modifyPlaceSchema } from "../schemas/places/patch";
+import { getPlaceSchema } from "../validation/places/get";
+import { createPlaceSchema } from "../validation/places/post";
+import { deletePlaceSchema } from "../validation/places/delete";
+import { modifyPlaceSchema } from "../validation/places/patch";
 import requestValidator from "../middleware/requestValidator";
 
 const router = Router();
