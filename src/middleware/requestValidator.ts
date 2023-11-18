@@ -8,7 +8,7 @@ const requestValidator =
   async (req: Request, _res: Response, next: NextFunction) =>
     await zodSchema
       .parseAsync({
-        body: <Object>req.body,
+        body: req.body,
         query: req.query,
         params: req.params,
       })
