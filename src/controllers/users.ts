@@ -1,14 +1,10 @@
 import { HttpStatusCode } from "axios";
-import Users, { usersSchema } from "../models/users";
+import Users, { emailIndex } from "../models/users";
 import RequestError from "../utils/errors/requestError";
 import { v4 as uuid } from "uuid";
 import { NextFunction, Request, Response } from "express";
 
 const { NotFound, InternalServerError, Ok, Created, Conflict } = HttpStatusCode;
-const emailIndex = (
-  usersSchema.getAttributeValue("email").index as { name?: string }
-).name;
-if (!emailIndex) throw new Error("Email index is not defined");
 const publicAttributes = ["id", "name", "email", "createdAt"];
 
 const getAll = async (_req: Request, res: Response, next: NextFunction) => {

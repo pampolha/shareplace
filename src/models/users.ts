@@ -1,5 +1,7 @@
 import dynamoose from "dynamoose";
-export const usersSchema = new dynamoose.Schema(
+
+export const emailIndex = "email-index";
+const usersSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     name: {
@@ -8,7 +10,7 @@ export const usersSchema = new dynamoose.Schema(
     },
     email: {
       index: {
-        name: "email-index",
+        name: emailIndex,
         type: "global",
       },
       type: String,

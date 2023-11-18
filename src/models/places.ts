@@ -1,10 +1,12 @@
 import dynamoose from "dynamoose";
-export const placesSchema = new dynamoose.Schema(
+
+export const userIdIndex = "userId-index";
+const placesSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     userId: {
       index: {
-        name: "userId-index",
+        name: userIdIndex,
         type: "global",
       },
       type: String,

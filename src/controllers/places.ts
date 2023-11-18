@@ -1,14 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import RequestError from "../utils/errors/requestError";
 import { getAddress, getLocation } from "../utils/places/location";
-import Places, { placesSchema } from "../models/places";
+import Places, { userIdIndex } from "../models/places";
 import { HttpStatusCode } from "axios";
 import { v4 as uuid } from "uuid";
-
-const userIdIndex = (
-  placesSchema.getAttributeValue("userId").index as { name?: string }
-).name;
-if (!userIdIndex) throw new Error("User id index is not defined");
 
 const { NotFound, InternalServerError, Ok, Created } = HttpStatusCode;
 
