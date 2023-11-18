@@ -1,7 +1,8 @@
 import RequestError from "../errors/requestError";
 import axios, { HttpStatusCode } from "axios";
-import { env } from "../../driver";
+import getEnv from "../getEnv";
 
+const env = getEnv();
 const key = env.geocoding_key;
 const { NotFound } = HttpStatusCode;
 
