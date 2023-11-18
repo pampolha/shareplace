@@ -12,6 +12,7 @@ const requestValidator =
         query: req.query,
         params: req.params,
       })
+      .then(() => next())
       .catch((error) => next(new ValidationError(error)));
 
 export default requestValidator;
