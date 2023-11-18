@@ -1,5 +1,5 @@
-const dynamoose = require("dynamoose");
-const placesSchema = new dynamoose.Schema(
+import dynamoose from "dynamoose";
+export const placesSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     userId: {
@@ -34,12 +34,13 @@ const placesSchema = new dynamoose.Schema(
     },
     description: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 const Places = dynamoose.model("Places", placesSchema);
-module.exports = Places;
+
+export default Places;
