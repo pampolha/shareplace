@@ -1,4 +1,6 @@
-const dynamoose = require("dynamoose");
+import dynamoose from "dynamoose";
+
+export const emailIndex = "email-index";
 const usersSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
@@ -8,7 +10,7 @@ const usersSchema = new dynamoose.Schema(
     },
     email: {
       index: {
-        name: "email-index",
+        name: emailIndex,
         type: "global",
       },
       type: String,
@@ -24,4 +26,5 @@ const usersSchema = new dynamoose.Schema(
   }
 );
 const Users = dynamoose.model("Users", usersSchema);
-module.exports = Users;
+
+export default Users;

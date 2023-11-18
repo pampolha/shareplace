@@ -1,5 +1,6 @@
-const { z } = require("zod");
-const createPlaceSchema = z
+import { z } from "zod";
+
+export const createPlaceSchema = z
   .object({
     body: z.object({
       title: z.string(),
@@ -13,5 +14,3 @@ const createPlaceSchema = z
     (schema) => schema.body.address || schema.body.location,
     "At least one of the following properties must be given to create a place: location, address"
   );
-
-module.exports = { createPlaceSchema };

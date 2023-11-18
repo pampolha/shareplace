@@ -1,5 +1,7 @@
+import { ZodError } from "zod";
+
 class ValidationError extends Error {
-  formatZodError = (zodError) => {
+  formatZodError = (zodError: ZodError) => {
     const parsedErrors = [];
     const { issues } = zodError;
 
@@ -17,17 +19,12 @@ class ValidationError extends Error {
     }
     return parsedErrors;
   };
-
-  constructor(zodError) {
-    if (!zodError) {
-      throw new SyntaxError(
-        "A zod error must be provided to create a ValidationError"
-      );
-    }
+  info;
+  constructor(zodError: ZodError) {
     super();
     this.info = this.formatZodError(zodError);
     this.name = "ValidationError";
   }
 }
 
-module.exports = ValidationError;
+export default ValidationError;

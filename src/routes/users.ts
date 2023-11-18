@@ -1,8 +1,8 @@
-const express = require("express");
-const controller = require("../controllers/users");
-const { getUserSchema } = require("../schemas/users/get");
-const requestValidator = require("../middleware/requestValidator");
-const { createUserSchema, userLoginSchema } = require("../schemas/users/post");
+import express from "express";
+import controller from "../controllers/users";
+import { getUserSchema } from "../validation/users/get";
+import { createUserSchema, userLoginSchema } from "../validation/users/post";
+import requestValidator from "../middleware/requestValidator";
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.post(
 );
 router.post("/login", requestValidator(userLoginSchema), controller.post.login);
 
-module.exports = router;
+export default router;

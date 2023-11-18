@@ -1,10 +1,12 @@
-const dynamoose = require("dynamoose");
+import dynamoose from "dynamoose";
+
+export const userIdIndex = "userId-index";
 const placesSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     userId: {
       index: {
-        name: "userId-index",
+        name: userIdIndex,
         type: "global",
       },
       type: String,
@@ -34,12 +36,13 @@ const placesSchema = new dynamoose.Schema(
     },
     description: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 const Places = dynamoose.model("Places", placesSchema);
-module.exports = Places;
+
+export default Places;

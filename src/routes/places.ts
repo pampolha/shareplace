@@ -1,10 +1,10 @@
-const { Router } = require("express");
-const controller = require("../controllers/places");
-const { getPlaceSchema } = require("../schemas/places/get");
-const { createPlaceSchema } = require("../schemas/places/post");
-const { deletePlaceSchema } = require("../schemas/places/delete");
-const { modifyPlaceSchema } = require("../schemas/places/patch");
-const requestValidator = require("../middleware/requestValidator");
+import { Router } from "express";
+import controller from "../controllers/places";
+import { getPlaceSchema } from "../validation/places/get";
+import { createPlaceSchema } from "../validation/places/post";
+import { deletePlaceSchema } from "../validation/places/delete";
+import { modifyPlaceSchema } from "../validation/places/patch";
+import requestValidator from "../middleware/requestValidator";
 
 const router = Router();
 
@@ -19,4 +19,4 @@ router.delete(
 );
 router.patch("/:id", requestValidator(modifyPlaceSchema), controller.patch.modify);
 
-module.exports = router;
+export default router;
