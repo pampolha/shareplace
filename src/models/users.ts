@@ -1,5 +1,5 @@
-const dynamoose = require("dynamoose");
-const usersSchema = new dynamoose.Schema(
+import dynamoose from "dynamoose";
+export const usersSchema = new dynamoose.Schema(
   {
     id: { type: String, hashKey: true, required: true },
     name: {
@@ -24,4 +24,5 @@ const usersSchema = new dynamoose.Schema(
   }
 );
 const Users = dynamoose.model("Users", usersSchema);
-module.exports = Users;
+
+export default Users;
