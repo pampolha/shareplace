@@ -18,10 +18,10 @@ export const getLocation = async (address: string) => {
       NotFound
     );
   }
-  return data.results[0].geometry.location as { lat: Number; lng: Number };
+  return data.results[0].geometry.location as { lat: number; lng: number };
 };
 
-export const getAddress = async (location: { lat: Number; lng: Number }) => {
+export const getAddress = async (location: { lat: number; lng: number }) => {
   const response = await axios.get(
     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${key}`
   );

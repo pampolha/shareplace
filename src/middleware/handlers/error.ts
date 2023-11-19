@@ -2,7 +2,12 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import RequestError from "../../utils/errors/requestError";
 import ValidationError from "../../utils/errors/validationError";
 
-const handler: ErrorRequestHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
+const handler: ErrorRequestHandler = (
+  error: Error,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (res.headersSent) return next();
   if (error instanceof ValidationError) {
     return res.status(400).json({
@@ -19,7 +24,6 @@ const handler: ErrorRequestHandler = (error: Error, _req: Request, res: Response
       message: "An server error occurred.",
     });
   }
-}
-
+};
 
 export default handler;
