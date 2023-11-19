@@ -1,6 +1,9 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import RequestError from "../../utils/errors/requestError";
 import ValidationError from "../../utils/errors/validationError";
+import { HttpStatusCode } from "axios";
+
+const { NotFound, InternalServerError } = HttpStatusCode;
 
 const handler: ErrorRequestHandler = (
   error: Error,
@@ -10,7 +13,7 @@ const handler: ErrorRequestHandler = (
 ) => {
   if (res.headersSent) return next();
   if (error instanceof ValidationError) {
-    return res.status(400).json({
+    return res.status(NotFound).json({
       message: "Validation error",
       info: error.info,
     });
@@ -20,7 +23,7 @@ const handler: ErrorRequestHandler = (
     });
   } else {
     console.error(error);
-    return res.status(500).json({
+    return res.status(InternalServerError).json({
       message: "An server error occurred.",
     });
   }

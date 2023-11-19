@@ -1,4 +1,7 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { HttpStatusCode } from "axios";
+
+const { NotFound } = HttpStatusCode;
 
 const handler: ErrorRequestHandler = (
   error: Error,
@@ -7,7 +10,7 @@ const handler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   if (error)
-    res.status(400).json({
+    res.status(NotFound).json({
       message: "Request body is not valid JSON.",
     });
   else next();
