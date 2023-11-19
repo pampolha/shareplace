@@ -7,7 +7,8 @@
     "persistent": "nodemon ./out/driver.js",
     "once": "node ./out/driver.js",
     "prepare": "husky install",
-    "lint": "prettier . --write && eslint . --fix"
+    "prettier": "prettier . --write",
+    "eslint": "eslint . --fix"
   },
   "author": "Gabriel Pampolha",
   "license": "LGPL-3.0-only",
