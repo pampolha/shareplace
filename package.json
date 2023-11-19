@@ -5,7 +5,9 @@
   "main": "./out/driver.js",
   "scripts": {
     "persistent": "nodemon ./out/driver.js",
-    "once": "node ./out/driver.js"
+    "once": "node ./out/driver.js",
+    "prepare": "husky install",
+    "lint": "prettier . --write && eslint . --fix"
   },
   "author": "Gabriel Pampolha",
   "license": "LGPL-3.0-only",
@@ -33,6 +35,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^3.0.1",
     "prettier": "3.1.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "husky": "^8.0.0"
   }
 }
