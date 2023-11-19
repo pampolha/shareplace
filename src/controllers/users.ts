@@ -69,27 +69,32 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
+  const loginError = new RequestError(
+    "Properties given do not match any user in the database",
+    NotFound
+  );
   try {
-    const loginError = new RequestError(
-      "Properties given do not match any user in the database",
-      NotFound
-    );
     const { email, password } = req.body;
+    const userIndex = 0;
     const userId = (
-      await Users.query("email").eq(email).using(emailIndex).exec()
-    )?.[0]?.id;
+      await Users.query("email")
+        .eq(email)
+        .using(emailIndex)
+        .attributes(["id"])
+        .exec()
+    ).at(userIndex)?.id;
     if (!userId) return next(loginError);
-    const authenticated =
-      (
-        await Users.query("id")
-          .eq(userId)
-          .and()
-          .attribute("password")
-          .eq(password)
-          .exec()
-      ).count > 0;
-    if (!authenticated) return next(loginError);
-    res.status(Ok).json({ message: "Login successful", userId });
+    const authenticatedUser = (
+      await Users.query("id")
+        .eq(userId)
+        .and()
+        .attribute("password")
+        .eq(password)
+        .attributes(publicAttributes)
+        .exec()
+    ).at(userIndex);
+    if (!authenticatedUser) return next(loginError);
+    res.status(Ok).json({ message: "Login successful", authenticatedUser });
   } catch (err) {
     console.error(err);
     next(
