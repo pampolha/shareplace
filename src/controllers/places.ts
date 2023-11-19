@@ -4,8 +4,39 @@ import { getAddress, getLocation } from "../utils/places/location";
 import Places, { userIdIndex } from "../models/places";
 import { HttpStatusCode } from "axios";
 import { v4 as uuid } from "uuid";
+import { AnyItem } from "dynamoose/dist/Item";
 
 const { NotFound, InternalServerError, Ok, Created } = HttpStatusCode;
+
+const userPlacesIds = async (req: Request) =>
+  Array.from(
+    await Places.query("userId")
+      .eq(req.params.id)
+      .attributes(["id"])
+      .using(userIdIndex)
+      .exec()
+  );
+
+const manipulateBatchData = async (
+  operation: "get" | "delete",
+  placesIds: AnyItem[]
+) => {
+  const places = [];
+  const batchLimit = 100;
+  for (
+    let startIndex = 0;
+    startIndex < placesIds.length;
+    startIndex += batchLimit
+  ) {
+    const ids = placesIds
+      .slice(startIndex, startIndex + batchLimit)
+      .map((item) => item.id);
+    const batchResult = await Places.batchGet(ids);
+    places.push(...batchResult);
+    if (operation === "delete") await Places.batchDelete(ids);
+  }
+  return places;
+};
 
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,15 +57,13 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
 
 const getByUserId = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const queryResult = await Places.query("userId")
-      .eq(req.params.id)
-      .using(userIdIndex)
-      .exec();
-    if (!queryResult.count)
+    const placesIds = await userPlacesIds(req);
+    if (!placesIds.length) {
       return next(
         new RequestError("No places found for given user id", NotFound)
       );
-    const places = await Places.batchGet(queryResult.map((item) => item.id));
+    }
+    const places = await manipulateBatchData("get", placesIds);
     res.status(Ok).json({ places });
   } catch (err) {
     console.error(err);
@@ -71,17 +100,13 @@ const deleteByUserId = async (
   next: NextFunction
 ) => {
   try {
-    const queryResult = await Places.query("userId")
-      .eq(req.params.id)
-      .using(userIdIndex)
-      .exec();
-    if (!queryResult.count)
+    const placesIds = await userPlacesIds(req);
+    if (!placesIds.length) {
       return next(
         new RequestError("No places found for given user id", NotFound)
       );
-    const placesids = queryResult.map((item) => item.id);
-    const places = await Places.batchGet(placesids);
-    await Places.batchDelete(placesids);
+    }
+    const places = await manipulateBatchData("delete", placesIds);
     res.status(Ok).json({ message: "Places deleted", places });
   } catch (err) {
     console.error(err);
