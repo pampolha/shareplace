@@ -1,3 +1,4 @@
 # shareplace
+
 Server code for a location sharing app
-*todo: document functionalities here*
+_todo: document functionalities here_

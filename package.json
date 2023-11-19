@@ -5,7 +5,9 @@
   "main": "./out/driver.js",
   "scripts": {
     "persistent": "nodemon ./out/driver.js",
-    "once": "node ./out/driver.js"
+    "once": "node ./out/driver.js",
+    "prepare": "husky install",
+    "lint": "prettier . --write && eslint . --fix"
   },
   "author": "Gabriel Pampolha",
   "license": "LGPL-3.0-only",
@@ -22,6 +24,18 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/uuid": "^9.0.7",
-    "nodemon": "^3.0.1"
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-config-standard-with-typescript": "^40.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.3.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "nodemon": "^3.0.1",
+    "prettier": "3.1.0",
+    "typescript": "^5.2.2",
+    "husky": "^8.0.0"
   }
 }
