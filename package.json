@@ -4,8 +4,8 @@
   "description": "",
   "main": "./out/driver.js",
   "scripts": {
-    "persistent": "nodemon ./out/driver.js",
-    "once": "node ./out/driver.js",
+    "persistent": "tsc && nodemon ./out/driver.js",
+    "once": "tsc && node ./out/driver.js",
     "prepare": "husky install",
     "prettier": "prettier . --write",
     "eslint": "eslint . --fix"
