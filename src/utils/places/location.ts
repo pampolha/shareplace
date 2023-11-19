@@ -4,6 +4,7 @@ import getEnv from "../getEnv";
 
 const env = getEnv();
 const key = env.geocoding_key;
+const desiredResultIndex = 0;
 const { NotFound } = HttpStatusCode;
 
 export const getLocation = async (address: string) => {
@@ -18,7 +19,10 @@ export const getLocation = async (address: string) => {
       NotFound
     );
   }
-  return data.results[0].geometry.location as { lat: number; lng: number };
+  return data.results[desiredResultIndex].geometry.location as {
+    lat: number;
+    lng: number;
+  };
 };
 
 export const getAddress = async (location: { lat: number; lng: number }) => {
@@ -32,5 +36,5 @@ export const getAddress = async (location: { lat: number; lng: number }) => {
       NotFound
     );
   }
-  return data.results[0].formatted_address as string;
+  return data.results[desiredResultIndex].formatted_address as string;
 };
