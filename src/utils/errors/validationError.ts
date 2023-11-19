@@ -6,15 +6,18 @@ class ValidationError extends Error {
     const { issues } = zodError;
 
     for (const issue of issues) {
-      const additionalInfo = Object.entries(issue)
-        .filter((el) => !el[0].match(/^(message|code|path)$/))
-        .map((array) => array.join(": "));
+      const additionalInfos = Object.entries(issue)
+        .filter((entry) => {
+          const fieldNameIndex = 0;
+          return !entry[fieldNameIndex].match(/^(message|code|path)$/);
+        })
+        .map((entry) => entry.join(": "));
 
       parsedErrors.push({
         message: issue.message,
         code: issue.code,
         path: issue.path.join(" > "),
-        additionalInfo,
+        additionalInfos,
       });
     }
     return parsedErrors;
